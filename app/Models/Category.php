@@ -25,6 +25,7 @@ class Category extends Model implements Auditable
 
     protected $fillable = [
         'name',
+        'logo',
         'status',
         'created_by',
         'updated_by',

@@ -102,9 +102,15 @@ class CategoryController extends Controller
 
                $categoryList = $query->clone()
                     ->orderBy($sort_by, $sort_order)
-                    ->skip($start)
-                    ->limit($limit)
                     ->get();
+
+               if (!empty($categoryList) && count($categoryList) > 0) {
+                    foreach ($categoryList as $category) {
+                         if (!empty($category->logo)) {
+                              $category->logo = asset('category_logo/' . $category->logo);
+                         }
+                    }
+               }
 
                $data = [
                     'status_code' => 200,

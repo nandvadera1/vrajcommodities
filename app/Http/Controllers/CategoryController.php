@@ -72,12 +72,21 @@ class CategoryController extends Controller
                 'max:200',
                 Rule::unique('categories')->whereNull('deleted_at')
             ],
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg',
             'status' => 'required|in:Active,Inactive'
         ]);
 
+        $logoFileName = '';
+
+        if (!empty($request->logo)) {
+            $logoFileName = $request->file('logo')->getClientOriginalName();
+            $request->file('logo')->move(public_path('category_logo'), $logoFileName);
+        }
+
         Category::create([
             'name' => $request->name,
-            'status' => $request->status
+            'status' => $request->status,
+            'logo' => $logoFileName
         ]);
 
         return redirect('/category')->with('Success', 'Category created successfully');
@@ -129,9 +138,23 @@ class CategoryController extends Controller
         ]);
 
         $category = Category::findOrFail($id);
+
+        $logoFileName = '';
+
+        if (!empty($request->logo)) {
+            $imagePath = public_path('category_logo/' . $category->logo);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            $logoFileName = $request->file('logo')->getClientOriginalName();
+            $request->file('logo')->move(public_path('category_logo'), $logoFileName);
+        }
+
         $category->update([
             'name' => $request->name,
-            'status' => $request->status
+            'status' => $request->status,
+            'logo' => $logoFileName
         ]);
 
         return redirect('/category')->with('Success', 'Category updated successfully.');
@@ -145,7 +168,15 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request)
     {
-        Category::destroy($request->id);
+        $category = Category::find($request->id);
+
+        if (!empty($category->logo)) {
+            $imagePath = public_path('category_logo/' . $category->logo);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
         return redirect('/category')->with('success', 'Category deleted successfully.');
     }
 

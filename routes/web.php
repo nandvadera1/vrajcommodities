@@ -18,11 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -46,4 +44,5 @@ Route::group(['middleware' => ['auth', 'can:admin']], function () {
     Route::get('item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
     Route::put('item/{id}', [ItemController::class, 'update'])->name('item.update');
     Route::delete('item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
+    Route::get('item/deleteOld', [ItemController::class, 'deleteItems']);
 });

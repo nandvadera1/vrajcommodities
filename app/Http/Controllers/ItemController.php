@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Item;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -63,7 +64,7 @@ class ItemController extends Controller
 
         if ($request->type == 'Image') {
             if (empty($request->image)) {
-                return back()->with('fail', 'Image is required');
+                return back()->with('Error', 'Image is required');
             } else {
                 $imageFilename = $request->file('image')->getClientOriginalName();
                 $request->file('image')->move(public_path($imageDirectory), $imageFilename);
@@ -79,7 +80,7 @@ class ItemController extends Controller
         }
         if ($request->type == 'Pdf') {
             if (empty($request->pdf)) {
-                return back()->with('fail', 'Pdf is required');
+                return back()->with('Error', 'Pdf is required');
             } else {
                 $pdfFilename = $request->file('pdf')->getClientOriginalName();
                 $request->file('pdf')->move(public_path($pdfDirectory), $pdfFilename);
@@ -95,7 +96,7 @@ class ItemController extends Controller
         }
         if ($request->type == 'Excel') {
             if (empty($request->excel)) {
-                return back()->with('fail', 'Excel is required');
+                return back()->with('Error', 'Excel is required');
             } else {
                 $excelFilename = $request->file('excel')->getClientOriginalName();
                 $request->file('excel')->move(public_path($excelDirectory), $excelFilename);
@@ -132,7 +133,74 @@ class ItemController extends Controller
      */
     public function destroy(Request $request)
     {
-        Item::destroy($request->id);
+        $item = Item::find($request->id);
+
+        // Check and delete the image file if it exists
+        if (!empty($item->image)) {
+            $imagePath = public_path('image/' . $item->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Check and delete the pdf file if it exists
+        if (!empty($item->pdf)) {
+            $pdfPath = public_path('pdf/' . $item->pdf);
+            if (file_exists($pdfPath)) {
+                unlink($pdfPath);
+            }
+        }
+
+        // Check and delete the excel file if it exists
+        if (!empty($item->excel)) {
+            $excelPath = public_path('excel/' . $item->excel);
+            if (file_exists($excelPath)) {
+                unlink($excelPath);
+            }
+        }
+
+        $item->delete();
+
         return redirect('/item')->with('success', 'Item deleted successfully.');
+    }
+
+    public function deleteItems()
+    {
+        $dateThreshold = Carbon::now()->subDays(30);
+
+        $items = Item::where('created_at', '<', $dateThreshold)->get();
+
+        if (!empty($items) && count($items) > 0) {
+            foreach ($items as $item) {
+                // Check and delete the image file if it exists
+                if (!empty($item->image)) {
+                    $imagePath = public_path('image/' . $item->image);
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+
+                // Check and delete the pdf file if it exists
+                if (!empty($item->pdf)) {
+                    $pdfPath = public_path('pdf/' . $item->pdf);
+                    if (file_exists($pdfPath)) {
+                        unlink($pdfPath);
+                    }
+                }
+
+                // Check and delete the excel file if it exists
+                if (!empty($item->excel)) {
+                    $excelPath = public_path('excel/' . $item->excel);
+                    if (file_exists($excelPath)) {
+                        unlink($excelPath);
+                    }
+                }
+
+                // Delete the item from the database
+                $item->delete();
+            }
+        }
+
+        return redirect('/home')->with('Success', 'Items older than 30 days have been deleted successfully.');
     }
 }

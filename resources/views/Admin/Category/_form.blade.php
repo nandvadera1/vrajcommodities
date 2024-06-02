@@ -18,5 +18,15 @@
             @enderror
         </div>
     </div>
+
+    <div class="form-group row">
+        {!! Form::label('logo', 'Logo', ['class' => 'col-sm-2 col-form-label']) !!}
+        <div class="col-sm-10">
+            {!! Form::file('logo', ['class' => $errors->has('logo') ? 'form-control is-invalid' : 'form-control']) !!}
+            @error('logo')
+                <span class="error invalid-feedback">{{ $message }}</span>
+            @enderror
+        </div>
+    </div>
 </div>
 

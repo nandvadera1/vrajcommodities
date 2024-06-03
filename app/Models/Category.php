@@ -40,7 +40,7 @@ class Category extends Model implements Auditable
 
     public static function getQueryForList($data)
     {
-        $sql = Category::select('id', 'name')
+        $sql = Category::select('id', 'name', 'logo')
             ->where('status', 'Active');
 
         if (@$data['search']) {

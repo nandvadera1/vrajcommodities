@@ -166,7 +166,7 @@ class ItemController extends Controller
 
     public function deleteItems()
     {
-        $dateThreshold = Carbon::now()->subDays(30);
+        $dateThreshold = Carbon::now()->subDays(15);
 
         $items = Item::where('created_at', '<', $dateThreshold)->get();
 

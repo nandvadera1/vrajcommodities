@@ -114,7 +114,7 @@ return [
         'mode' => 'fullscreen',
         'img' => [
             'path' => 'logo/logo.jpeg',
-            'alt' => 'AdminLTE Preloader Image',
+            'alt' => 'Vraj Agree Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
             'height' => 60,

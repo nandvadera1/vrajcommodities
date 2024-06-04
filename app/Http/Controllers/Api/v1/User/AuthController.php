@@ -187,22 +187,22 @@ class AuthController extends Controller
                 //Check if a user is present wth same device_id
                 $check = User::where('device_id', $request->device_id)->first();
 
-                if(!empty($check)){
+                if (!empty($check)) {
                     $data = [
                         'status_code' => 400,
                         'message' => 'You can not login to this device with new number. Please Contact Administrator.',
                         'data' => [],
                     ];
-    
+
                     return sendJsonResponse($data);
                 }
 
                 // Current date in Y-m-d format
                 $subcription_start = Carbon::now()->format('Y-m-d');
-        
+
                 // Free subscription duration
                 $free_subcription = 15; // 15 Days
-        
+
                 // Calculate subscription end date
                 $subcription_end = Carbon::now()->addDays($free_subcription)->format('Y-m-d');
 
@@ -217,7 +217,7 @@ class AuthController extends Controller
             } else {
                 //Check if device id is same
 
-                if($request->device_id != $user->device_id){
+                if ($request->device_id != $user->device_id) {
                     $data = [
                         'status_code' => 400,
                         'message' => 'Device id does not match',
@@ -230,14 +230,14 @@ class AuthController extends Controller
                 //Check if the subcription has expired..
                 $subcription_end = $user->subcription_end;
 
-                if(!empty($subcription_end)){
-                    if(Carbon::now()->greaterThan($subcription_end)){
+                if (!empty($subcription_end)) {
+                    if (Carbon::now()->greaterThan($subcription_end)) {
                         $data = [
                             'status_code' => 400,
                             'message' => 'Subscription Expired',
                             'data' => [],
                         ];
-    
+
                         return sendJsonResponse($data);
                     }
                 } else {
@@ -278,7 +278,7 @@ class AuthController extends Controller
                 $authData['userDetails'] = $user;
                 $authData['token'] = $token;
                 $authData['token_type'] = 'bearer';
-                $authData['expires_in'] = JWTAuth::factory()->getTTL() * 60 * 24;
+                $authData['expires_in'] = JWTAuth::factory()->getTTL() * 60;
 
                 $data = [
                     'status_code' => 200,
@@ -325,6 +325,67 @@ class AuthController extends Controller
                 'message' => $e,
                 'data' => null,
             ]);
+        }
+    }
+
+    /** @OA\Post(
+     *     path="/api/v1/user/refresh-token",
+     *     summary="Refresh Token",
+     *     tags={"Login"},
+     *     operationId="Refresh Token",
+     *
+     *      @OA\Response(
+     *         response=200,
+     *         description="json schema",
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *         ),
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Invalid Request"
+     *     ),
+     *      security={
+     *          {"bearerAuth":{}}
+     *      }
+     * )
+     */
+
+    public function refreshToken()
+    {
+        try {
+            $currentToken = JWTAuth::getToken();
+
+            if (!$currentToken) {
+                $data = [
+                    'status_code' => 400,
+                    'message' => 'Token not found.',
+                    'data' => ''
+                ];
+
+                return sendJsonResponse($data);
+            }
+
+            $data['token'] = JWTAuth::refresh($currentToken);
+            $data['token_type'] = 'bearer';
+            $data['expires_in'] = JWTAuth::factory()->getTTL() * 60;
+
+            $data = [
+                'status_code' => 200,
+                'message' => 'Token refresh successfully',
+                'data' => $data
+            ];
+
+            return sendJsonResponse($data);
+        } catch (\Exception $e) {
+            Log::error([
+                'method' => __METHOD__,
+                'error' => ['file' => $e->getFile(), 'line' => $e->getLine(), 'message' => $e->getMessage()],
+                'created_at' => date("Y-m-d H:i:s")
+            ]);
+            return sendJsonResponse(array('status_code' => 500, 'message' => 'Something went wrong.'));
         }
     }
 }

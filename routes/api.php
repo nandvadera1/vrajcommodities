@@ -27,6 +27,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['XssSanitization']], function (
     Route::group(['prefix' => 'user'], function () {
         Route::controller(AuthController::class)->group(function () {
             Route::post('/login', 'login');
+            Route::post('/refresh-token', 'refreshToken');
         });
 
         Route::group(['middleware' => ['UserAuthentication']], function () {

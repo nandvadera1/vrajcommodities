@@ -46,7 +46,7 @@ class ItemController extends Controller
     {
         $request->validate([
             'category_id' => 'required|numeric|exists:categories,id',
-            'type' => 'required|in:Image,Pdf,Excel',
+            'type' => 'nullable|in:Image,Pdf,Excel',
             'message' => 'nullable|string',
             'pdf' => 'nullable|file|mimes:pdf',
             'excel' => 'nullable|file|mimes:xls,xlsx',
@@ -109,6 +109,15 @@ class ItemController extends Controller
                     'status' => $request->status
                 ]);
             }
+        }
+
+        if(empty($request->type)){
+            Item::create([
+                'category_id' => $request->category_id,
+                'type' => 'message',
+                'message' => $request->message,
+                'status' => $request->status
+            ]);
         }
 
         return redirect('/item')->with('Success', 'Item created successfully');

@@ -128,6 +128,32 @@
                 }
             }
         },
+        "/api/v1/user/refresh-token": {
+            "post": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Refresh Token",
+                "description": "Refresh Token",
+                "operationId": "Refresh Token",
+                "responses": {
+                    "200": {
+                        "description": "json schema",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid Request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/user/category/list": {
             "post": {
                 "tags": [

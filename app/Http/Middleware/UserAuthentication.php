@@ -7,6 +7,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use App\Utility\Common;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class UserAuthentication
 {
@@ -20,6 +21,8 @@ class UserAuthentication
      */
     public function handle($request, Closure $next)
     {
+
+        Log::info(JWTAuth::getToken());
         $requestHeader = substr($request->header('content-type'), 0, strpos($request->header('content-type'), ';'));
 
         if ($request->header('authorization') !== null) {

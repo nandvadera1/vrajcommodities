@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HtmlController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -54,3 +55,7 @@ Route::group(['middleware' => ['auth', 'can:admin']], function () {
     Route::delete('item/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
     Route::get('item/deleteOld', [ItemController::class, 'deleteItems']);
 });
+
+
+Route::get('privacy-policy', [HtmlController::class, 'privacyPolicy']);
+Route::get('contact-us', [HtmlController::class, 'contactUs']);

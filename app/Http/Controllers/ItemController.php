@@ -17,7 +17,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::all();
+        $items = Item::orderBy('id', 'desc')->get();
         return view('Admin.Item.index', [
             'items' => $items
         ]);
@@ -67,6 +67,8 @@ class ItemController extends Controller
                 return back()->with('Error', 'Image is required');
             } else {
                 $imageFilename = $request->file('image')->getClientOriginalName();
+                $imageFilename = str_replace(' ', '_', $imageFilename);
+                $imageFilename = str_replace('-', '_', $imageFilename);
                 $request->file('image')->move(public_path($imageDirectory), $imageFilename);
 
                 Item::create([
@@ -83,6 +85,8 @@ class ItemController extends Controller
                 return back()->with('Error', 'Pdf is required');
             } else {
                 $pdfFilename = $request->file('pdf')->getClientOriginalName();
+                $pdfFilename = str_replace(' ', '_', $pdfFilename);
+                $pdfFilename = str_replace('-', '_', $pdfFilename);
                 $request->file('pdf')->move(public_path($pdfDirectory), $pdfFilename);
 
                 Item::create([
@@ -99,6 +103,8 @@ class ItemController extends Controller
                 return back()->with('Error', 'Excel is required');
             } else {
                 $excelFilename = $request->file('excel')->getClientOriginalName();
+                $excelFilename = str_replace(' ', '_', $excelFilename);
+                $excelFilename = str_replace('-', '_', $excelFilename);
                 $request->file('excel')->move(public_path($excelDirectory), $excelFilename);
 
                 Item::create([

@@ -21,8 +21,6 @@ class UserAuthentication
      */
     public function handle($request, Closure $next)
     {
-
-        Log::info(JWTAuth::getToken());
         $requestHeader = substr($request->header('content-type'), 0, strpos($request->header('content-type'), ';'));
 
         if ($request->header('authorization') !== null) {

@@ -17,7 +17,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::all();
+        $items = Item::orderBy('id', 'desc')->get();
         return view('Admin.Item.index', [
             'items' => $items
         ]);

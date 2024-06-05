@@ -61,8 +61,8 @@
         </ul>
         <p>2. Customer:</p>
         <ul>
-            <li>Customers will receive updates about agricultural products such as sugar, oil, and many more items.</li>
-            <li>Important updates related to seasonal products and market trends.</li>
+            <li>Customers can check the information of agricultural products such as sugar, oil, and many more items in the application.</li>
+            <li>Important information related to seasonal products and market trends.</li>
         </ul>
 
         <h2>How We Use Information</h2>

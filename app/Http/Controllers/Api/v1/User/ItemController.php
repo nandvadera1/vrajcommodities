@@ -120,6 +120,8 @@ class ItemController extends Controller
 
                $itemList = $query->clone()
                     ->orderBy($sort_by, $sort_order)
+                    ->skip($start)
+                    ->limit($limit)
                     ->get();
 
                if(!empty($itemList) && count($itemList) > 0){

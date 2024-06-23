@@ -31,14 +31,13 @@ class LogoutUser extends Command
         $currentDate = Carbon::now()->format('Y-m-d');
 
         $users = User::where('role_id', 2)
-            ->whereDate('subscription_end', '<', $currentDate)
+            ->where('subcription_end', '<', $currentDate)
             ->limit(10)
             ->get();
 
         foreach ($users as $user) {
-            // Invalidate the user's token
-            JWTAuth::invalidate(JWTAuth::fromUser($user));
+            $token = $user->token;
+            JWTAuth::setToken($token)->invalidate();
         }
-        
     }
 }

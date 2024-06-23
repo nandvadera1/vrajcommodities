@@ -59,3 +59,4 @@ Route::group(['middleware' => ['auth', 'can:admin']], function () {
 
 Route::get('privacy-policy', [HtmlController::class, 'privacyPolicy']);
 Route::get('contact-us', [HtmlController::class, 'contactUs']);
+Route::get('demo', [HtmlController::class, 'demo']);

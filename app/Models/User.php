@@ -27,6 +27,7 @@ class User extends Authenticatable implements Auditable, JWTSubject
 
     protected $fillable = [
         'role_id',
+        'token',
         'name',
         'mobile',
         'device_id',

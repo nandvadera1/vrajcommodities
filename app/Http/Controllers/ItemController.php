@@ -46,7 +46,7 @@ class ItemController extends Controller
     {
         $request->validate([
             'category_id' => 'required|numeric|exists:categories,id',
-            'type' => 'nullable|in:Image,Pdf,Excel',
+            'type' => 'nullable|in:Image,Pdf,Excel,Message',
             'message' => 'nullable|string',
             'pdf' => 'nullable|file|mimes:pdf',
             'excel' => 'nullable|file|mimes:xls,xlsx',
@@ -117,8 +117,7 @@ class ItemController extends Controller
                 ]);
             }
         }
-
-        if(empty($request->type)){
+        if($request->type == 'Message'){
             Item::create([
                 'category_id' => $request->category_id,
                 'type' => 'message',

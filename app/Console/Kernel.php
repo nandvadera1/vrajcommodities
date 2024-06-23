@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
         $schedule->command('app:delete-items')->everyFourHours();
-        $schedule->command('app:logout-user')->everyFiveMinutes();
+        $schedule->command('app:logout-user')->everyFiveSeconds();
     }
 
     /**

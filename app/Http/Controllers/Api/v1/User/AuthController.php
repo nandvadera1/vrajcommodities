@@ -234,7 +234,7 @@ class AuthController extends Controller
                     if (Carbon::now()->greaterThan($subcription_end)) {
                         $data = [
                             'status_code' => 400,
-                            'message' => 'Subscription Expired',
+                            'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
                             'data' => [],
                         ];
 
@@ -243,7 +243,7 @@ class AuthController extends Controller
                 } else {
                     $data = [
                         'status_code' => 400,
-                        'message' => 'Subscription Expired',
+                        'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
                         'data' => [],
                     ];
 
@@ -270,6 +270,10 @@ class AuthController extends Controller
                 $request->merge(['user_id' => $user->id]);
 
                 UserLogin::addUserLoginData($request);
+
+                $user->update([
+                    'token' => $token
+                ]);
 
                 $user = User::getUserDetails($user->id);
 

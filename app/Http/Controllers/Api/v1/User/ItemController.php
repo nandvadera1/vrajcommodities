@@ -120,6 +120,8 @@ class ItemController extends Controller
 
                $itemList = $query->clone()
                     ->orderBy($sort_by, $sort_order)
+                    ->skip($start)
+                    ->limit($limit)
                     ->get();
 
                if(!empty($itemList) && count($itemList) > 0){
@@ -128,10 +130,10 @@ class ItemController extends Controller
                               $item->image = asset('image/' . $item->image);
                          }
                          if(!empty($item->pdf)){
-                              $item->image = asset('pdf/' . $item->pdf);
+                              $item->pdf = asset('pdf/' . $item->pdf);
                          }
                          if(!empty($item->excel)){
-                              $item->image = asset('excel/' . $item->excel);
+                              $item->excel = asset('excel/' . $item->excel);
                          }
                     }
                }

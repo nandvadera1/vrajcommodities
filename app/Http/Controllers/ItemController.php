@@ -51,8 +51,9 @@ class ItemController extends Controller
             'pdf' => 'nullable|file|mimes:pdf',
             'excel' => 'nullable|file|mimes:xls,xlsx',
             'image' => 'nullable|file|mimes:jpeg,png,jpg',
-            'status' => 'required|in:Active,Inactive'
         ]);
+
+        $request->merge(['status' => 'Active']);
 
         $pdfDirectory = 'pdf';
         $excelDirectory = 'excel';

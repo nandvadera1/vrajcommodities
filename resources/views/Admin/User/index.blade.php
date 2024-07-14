@@ -31,6 +31,16 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="form-group row">
+                            {!! Form::label('subcription_start', 'Subscription Start', ['class' => 'col-sm-2 col-form-label']) !!}
+                            <div class="col-sm-4">
+                                {!! Form::date('subcription_start', null, ['class' => 'form-control', 'id' => 'subcription_start']) !!}
+                            </div>
+                            {!! Form::label('subcription_end', 'Subscription End', ['class' => 'col-sm-2 col-form-label']) !!}
+                            <div class="col-sm-4">
+                                {!! Form::date('subcription_end', null, ['class' => 'form-control', 'id' => 'subcription_end']) !!}
+                            </div>
+                        </div>
                         <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" bordered>
                         </x-adminlte-datatable>
                     </div>
@@ -43,6 +53,29 @@
 @section('js')
     <script>
         var mytable;
+
+        $('#subcription_start, #subcription_end').change(function () {
+            var subcription_start = $('#subcription_start').val();
+            var subcription_end = $('#subcription_end').val();
+            var url = "/users/dataTable";
+
+            var params = [];
+
+            if (subcription_start !== null && subcription_start !== "") {
+                params.push("subcription_start=" + encodeURIComponent(subcription_start));
+            }
+            if (subcription_end !== null && subcription_end !== "") {
+                params.push("subcription_end=" + encodeURIComponent(subcription_end));
+            }
+
+            if (params.length > 0) {
+                url += "?" + params.join("&");
+            }
+
+            console.log(url);
+
+            $('#table1').DataTable().ajax.url(url).load();
+        });
 
         /* DELETE Record using AJAX Requres */
         $(document).on('click', '.delete', function () {

@@ -182,9 +182,22 @@ class UserController extends Controller
         return redirect('/users')->with('success', 'User deleted successfully.');
     }
 
-    public function getDataTable()
+    public function getDataTable(Request $request)
     {
-        $users = User::where('role_id', 2)->get();
+        $subcription_start = $request->input('subcription_start');
+        $subcription_end = $request->input('subcription_end');
+
+        $users = User::where('role_id', 2)
+            ->where(function ($query) use ($subcription_start, $subcription_end) {
+                if (@$subcription_start) {
+                    $query->where('subcription_start', '>', $subcription_start);
+                }
+                if (@$subcription_end) {
+                    $query->where('subcription_end', '<', $subcription_end);
+                }
+                return $query;
+            })
+            ->get();
 
         return DataTables::of($users)
             ->addColumn('edit', function ($user) {

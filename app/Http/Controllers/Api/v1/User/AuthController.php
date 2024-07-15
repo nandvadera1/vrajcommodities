@@ -233,7 +233,7 @@ class AuthController extends Controller
                 if (!empty($subcription_end)) {
                     if (Carbon::now()->greaterThan($subcription_end)) {
                         $data = [
-                            'status_code' => 400,
+                            'status_code' => 405,
                             'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
                             'data' => [],
                         ];

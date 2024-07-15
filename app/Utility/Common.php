@@ -101,6 +101,8 @@ class Common
             $responseStr = ResponseFormatter::responseForBankVerificationInProcess($response);
         } elseif ($response['status_code'] == 203) {
             $responseStr = ResponseFormatter::responseForAadhaarVerificationInProcess($response);
+        } elseif ($response['status_code'] == 405) {
+            $responseStr = ResponseFormatter::responseForSubscriptionExpired($response);
         }
 
         return \Illuminate\Support\Facades\Response::json($responseStr)->header('Content-Type', 'application/json');

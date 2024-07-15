@@ -217,14 +217,16 @@ class AuthController extends Controller
             } else {
                 //Check if device id is same
 
-                if ($request->device_id != $user->device_id) {
-                    $data = [
-                        'status_code' => 400,
-                        'message' => 'Device id does not match',
-                        'data' => [],
-                    ];
-
-                    return sendJsonResponse($data);
+                if ($user->device_id != null) {
+                    if ($request->device_id != $user->device_id) {
+                        $data = [
+                            'status_code' => 400,
+                            'message' => 'Device id does not match',
+                            'data' => [],
+                        ];
+    
+                        return sendJsonResponse($data);
+                    }
                 }
 
                 //Check if the subcription has expired..

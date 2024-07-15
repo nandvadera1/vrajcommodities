@@ -214,4 +214,18 @@ class ResponseFormatter
 
           return $response;
      }
+
+     public static function responseForSubscriptionExpired($params = [])
+     {
+          $response = [
+               'STATUS' => self::SUCCESS,
+               'STATUS_CODE' => 405,
+               'MESSAGE' => ucfirst($params['message']),
+               'DATA' => (object) (isset($params['data']) ? $params['data'] : []),
+          ];
+
+          Log::error($response);
+
+          return $response;
+     }
 }

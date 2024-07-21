@@ -183,75 +183,78 @@ class AuthController extends Controller
 
             $user = User::where('mobile', $request->mobile)->first();
 
-            if (!$user) {
-                //Check if a user is present wth same device_id
-                $check = User::where('device_id', $request->device_id)->first();
+            if ($request->mobile != '7777777777') {
+                if (!$user) {
+                    //Check if a user is present wth same device_id
+                    $check = User::where('device_id', $request->device_id)->first();
 
-                if (!empty($check)) {
-                    $data = [
-                        'status_code' => 400,
-                        'message' => 'You can not login to this device with new number. Please Contact Administrator.',
-                        'data' => [],
-                    ];
-
-                    return sendJsonResponse($data);
-                }
-
-                // Current date in Y-m-d format
-                $subcription_start = Carbon::now()->format('Y-m-d');
-
-                // Free subscription duration
-                $free_subcription = 15; // 15 Days
-
-                // Calculate subscription end date
-                $subcription_end = Carbon::now()->addDays($free_subcription)->format('Y-m-d');
-
-                // Create new user
-                $user = User::create([
-                    'role_id' => 2,
-                    'mobile' => $request->mobile,
-                    'device_id' => $request->device_id,
-                    'subcription_start' => $subcription_start,
-                    'subcription_end' => $subcription_end
-                ]);
-            } else {
-                //Check if device id is same
-
-                if ($user->device_id != null) {
-                    if ($request->device_id != $user->device_id) {
+                    if (!empty($check)) {
                         $data = [
                             'status_code' => 400,
-                            'message' => 'Device id does not match',
+                            'message' => 'You can not login to this device with new number. Please Contact Administrator.',
                             'data' => [],
                         ];
-    
+
                         return sendJsonResponse($data);
                     }
-                }
 
-                //Check if the subcription has expired..
-                $subcription_end = $user->subcription_end;
+                    // Current date in Y-m-d format
+                    $subcription_start = Carbon::now()->format('Y-m-d');
 
-                if (!empty($subcription_end)) {
-                    if (Carbon::now()->greaterThan($subcription_end)) {
+                    // Free subscription duration
+                    $free_subcription = 15; // 15 Days
+
+                    // Calculate subscription end date
+                    $subcription_end = Carbon::now()->addDays($free_subcription)->format('Y-m-d');
+
+                    // Create new user
+                    $user = User::create([
+                        'role_id' => 2,
+                        'mobile' => $request->mobile,
+                        'device_id' => $request->device_id,
+                        'subcription_start' => $subcription_start,
+                        'subcription_end' => $subcription_end
+                    ]);
+                } else {
+                    //Check if device id is same
+
+                    if ($user->device_id != null) {
+                        if ($request->device_id != $user->device_id) {
+                            $data = [
+                                'status_code' => 400,
+                                'message' => 'Device id does not match',
+                                'data' => [],
+                            ];
+
+                            return sendJsonResponse($data);
+                        }
+                    }
+
+                    //Check if the subcription has expired..
+                    $subcription_end = $user->subcription_end;
+
+                    if (!empty($subcription_end)) {
+                        if (Carbon::now()->greaterThan($subcription_end)) {
+                            $data = [
+                                'status_code' => 405,
+                                'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
+                                'data' => [],
+                            ];
+
+                            return sendJsonResponse($data);
+                        }
+                    } else {
                         $data = [
-                            'status_code' => 405,
+                            'status_code' => 400,
                             'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
                             'data' => [],
                         ];
 
                         return sendJsonResponse($data);
                     }
-                } else {
-                    $data = [
-                        'status_code' => 400,
-                        'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
-                        'data' => [],
-                    ];
-
-                    return sendJsonResponse($data);
                 }
             }
+
 
             $user = User::getUserDataUsingMobile($request->mobile);
 

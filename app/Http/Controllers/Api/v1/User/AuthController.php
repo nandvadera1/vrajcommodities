@@ -183,7 +183,7 @@ class AuthController extends Controller
 
             $user = User::where('mobile', $request->mobile)->first();
 
-            if ($request->mobile != '7777777777') {
+            if ($request->mobile != '1111111111') {
                 if (!$user) {
                     //Check if a user is present wth same device_id
                     $check = User::where('device_id', $request->device_id)->first();

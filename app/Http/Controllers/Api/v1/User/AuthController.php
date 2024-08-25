@@ -191,7 +191,7 @@ class AuthController extends Controller
                     if (!empty($check)) {
                         $data = [
                             'status_code' => 400,
-                            'message' => 'You can not login to this device with new number. Please Contact Administrator.',
+                            'message' => 'You can not login to this device with new number. Please Contact 9428240340 to renew your subscription.',
                             'data' => [],
                         ];
 
@@ -222,7 +222,7 @@ class AuthController extends Controller
                         if ($request->device_id != $user->device_id) {
                             $data = [
                                 'status_code' => 400,
-                                'message' => 'Device id does not match',
+                                'message' => 'Device id does not match. Please Contact 9428240340 to renew your subscription.',
                                 'data' => [],
                             ];
 
@@ -237,7 +237,7 @@ class AuthController extends Controller
                         if (Carbon::now()->greaterThan($subcription_end)) {
                             $data = [
                                 'status_code' => 405,
-                                'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
+                                'message' => 'Your subscription has expired. Please Contact 9428240340 to renew your subscription.',
                                 'data' => [],
                             ];
 
@@ -246,7 +246,7 @@ class AuthController extends Controller
                     } else {
                         $data = [
                             'status_code' => 400,
-                            'message' => 'Your subscription has expired. Please Contact 9033984252 to renew your subscription.',
+                            'message' => 'Your subscription has expired. Please Contact 9428240340 to renew your subscription.',
                             'data' => [],
                         ];
 
@@ -277,7 +277,8 @@ class AuthController extends Controller
                 UserLogin::addUserLoginData($request);
 
                 $user->update([
-                    'token' => $token
+                    'token' => $token,
+                    'device_id' => $request->device_id,
                 ]);
 
                 $user = User::getUserDetails($user->id);

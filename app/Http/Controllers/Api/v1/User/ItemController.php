@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api\v1\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Item;
+use App\Models\User;
+use Carbon\Carbon;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -106,6 +110,38 @@ class ItemController extends Controller
                     'category_id' => $category_id
                ];
 
+               $userId = auth()->user()->id;
+
+               $user = User::find($userId);
+
+               $currentDate = Carbon::now()->format('Y-m-d');
+
+               if ($user->subcription_end < $currentDate) {
+                    $token = $user->token;
+
+                    if (!$token || count(explode('.', $token)) !== 3) {
+                         $this->error("Invalid token for user ID: {$user->id}");
+                    } else {
+                         try {
+                              JWTAuth::setToken($token)->invalidate();
+                              Log::info("Token invalidated successfully: {$user->id}");
+                         } catch (TokenExpiredException $e) {
+                              Log::info("Token already expired: {$user->id}");
+                              // Optionally, you can log the error or perform other actions here
+                         } catch (\Exception $e) {
+                              Log::info("Failed to invalidate token for user ID: {$user->id}: {$e->getMessage()}");
+                         }
+                    }
+
+                    $data = [
+                         'status_code' => 400,
+                         'message' => 'Your subscription has expired. Please Contact 9428240340 to renew your subscription.',
+                         'data' => ''
+                    ];
+
+                    return sendJsonResponse($data);
+               }
+
                $query = Item::getQueryForList($data);
 
                $total_count = Item::select('id')
@@ -124,15 +160,15 @@ class ItemController extends Controller
                     ->limit($limit)
                     ->get();
 
-               if(!empty($itemList) && count($itemList) > 0){
-                    foreach ($itemList as $item){
-                         if(!empty($item->image)){
+               if (!empty($itemList) && count($itemList) > 0) {
+                    foreach ($itemList as $item) {
+                         if (!empty($item->image)) {
                               $item->image = asset('image/' . $item->image);
                          }
-                         if(!empty($item->pdf)){
+                         if (!empty($item->pdf)) {
                               $item->pdf = asset('pdf/' . $item->pdf);
                          }
-                         if(!empty($item->excel)){
+                         if (!empty($item->excel)) {
                               $item->excel = asset('excel/' . $item->excel);
                          }
                     }
